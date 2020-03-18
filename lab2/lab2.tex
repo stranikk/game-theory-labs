@@ -1,33 +1,44 @@
-\documentclass[11pt]{article}
 
-    \usepackage[russian]{babel}
-    \usepackage[breakable]{tcolorbox}
-    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+% Default to the notebook output style
+
     
-    \usepackage{iftex}
-    \ifPDFTeX
-    	\usepackage[T1]{fontenc}
-    	\usepackage{mathpazo}
-    \else
-    	\usepackage{fontspec}
-    \fi
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass[12pt]{extarticle}
+
+    
+    \usepackage[russian]{babel}
+    \usepackage[T1]{fontenc}
+    % Nicer default font (+ math font) than Computer Modern for most use cases
+    \usepackage{mathpazo}
 
     % Basic figure setup, for now with no caption control since it's done
     % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
     \usepackage{graphicx}
-    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    % We will generate all images so they have a width \maxwidth. This means
+    % that they will get their normal width if they fit onto the page, but
+    % are scaled down if they would overflow the margins.
+    \makeatletter
+    \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth
+    \else\Gin@nat@width\fi}
+    \makeatother
     \let\Oldincludegraphics\includegraphics
+    % Set max figure width to be 80% of text width, for now hardcoded.
+    \renewcommand{\includegraphics}[1]{\Oldincludegraphics[width=.8\maxwidth]{#1}}
     % Ensure that by default, figures have no caption (until we provide a
     % proper Figure object with a Caption API and a way to capture that
     % in the conversion process - todo).
     \usepackage{caption}
-    \DeclareCaptionFormat{nocaption}{}
-    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+    \DeclareCaptionLabelFormat{nolabel}{}
+    \captionsetup{labelformat=nolabel}
 
-    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
-    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
-    \usepackage{float}
-    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{adjustbox} % Used to constrain images to a maximum size 
     \usepackage{xcolor} % Allow colors to be defined
     \usepackage{enumerate} % Needed for markdown enumerations to work
     \usepackage{geometry} % Used to adjust the document margins
@@ -41,24 +52,14 @@
     \usepackage{upquote} % Upright quotes for verbatim code
     \usepackage{eurosym} % defines \euro
     \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage[utf8x]{inputenc} % Allow utf-8 characters in the tex document
     \usepackage{fancyvrb} % verbatim replacement that allows latex
     \usepackage{grffile} % extends the file name processing of package graphics 
-                         % to support a larger range
-    \makeatletter % fix for grffile with XeLaTeX
-    \def\Gread@@xetex#1{%
-      \IfFileExists{"\Gin@base".bb}%
-      {\Gread@eps{\Gin@base.bb}}%
-      {\Gread@@xetex@aux#1}%
-    }
-    \makeatother
-
+                         % to support a larger range 
     % The hyperref package gives us a pdf with properly built
     % internal navigation ('pdf bookmarks' for the table of contents,
     % internal cross-reference links, web links for URLs, etc.)
     \usepackage{hyperref}
-    % The default LaTeX title has an obnoxious amount of whitespace. By default,
-    % titling removes some of it. It also provides customization options.
-    \usepackage{titling}
     \usepackage{longtable} % longtable support required by pandoc >1.10
     \usepackage{booktabs}  % table support for pandoc > 1.12.2
     \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
@@ -67,6 +68,7 @@
     \usepackage{mathrsfs}
     
 
+    
     
     % Colors for the hyperref package
     \definecolor{urlcolor}{rgb}{0,.145,.698}
@@ -153,7 +155,9 @@
     
     
     
-% Pygments definitions
+
+    % Pygments definitions
+    
 \makeatletter
 \def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
     \let\PY@ul=\relax \let\PY@tc=\relax%
@@ -255,97 +259,11 @@
 \makeatother
 
 
-    % For linebreaks inside Verbatim environment from package fancyvrb. 
-    \makeatletter
-        \newbox\Wrappedcontinuationbox 
-        \newbox\Wrappedvisiblespacebox 
-        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
-        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
-        \newcommand*\Wrappedcontinuationindent {3ex } 
-        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
-        % Take advantage of the already applied Pygments mark-up to insert 
-        % potential linebreaks for TeX processing. 
-        %        {, <, #, %, $, ' and ": go to next line. 
-        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
-        % Use of \textquotesingle for straight quote. 
-        \newcommand*\Wrappedbreaksatspecials {% 
-            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
-            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
-            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
-            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
-            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
-            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
-            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
-            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
-            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
-            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
-            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
-            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
-            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
-            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
-        } 
-        % Some characters . , ; ? ! / are not pygmentized. 
-        % This macro makes them "active" and they will insert potential linebreaks 
-        \newcommand*\Wrappedbreaksatpunct {% 
-            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
-            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
-            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
-            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
-            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
-            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
-            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
-            \catcode`\.\active
-            \catcode`\,\active 
-            \catcode`\;\active
-            \catcode`\:\active
-            \catcode`\?\active
-            \catcode`\!\active
-            \catcode`\/\active 
-            \lccode`\~`\~ 	
-        }
-    \makeatother
-
-    \let\OriginalVerbatim=\Verbatim
-    \makeatletter
-    \renewcommand{\Verbatim}[1][1]{%
-        %\parskip\z@skip
-        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
-        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
-        \def\FancyVerbFormatLine ##1{\hsize\linewidth
-            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
-                \doublehyphendemerits\z@\finalhyphendemerits\z@
-                \strut ##1\strut}%
-        }%
-        % If the linebreak is at a space, the latter will be displayed as visible
-        % space at end of first line, and a continuation symbol starts next line.
-        % Stretch/shrink are however usually zero for typewriter font.
-        \def\FV@Space {%
-            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
-            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
-            {\kern\fontdimen2\font}%
-        }%
-        
-        % Allow breaks at special characters using \PYG... macros.
-        \Wrappedbreaksatspecials
-        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
-        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
-    }
-    \makeatother
-
     % Exact colors from NB
-    \definecolor{incolor}{HTML}{303F9F}
-    \definecolor{outcolor}{HTML}{D84315}
-    \definecolor{cellborder}{HTML}{CFCFCF}
-    \definecolor{cellbackground}{HTML}{F7F7F7}
-    
-    % prompt
-    \makeatletter
-    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
-    \makeatother
-    \newcommand{\prompt}[4]{
-        \ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}
-    }
-    
+    \definecolor{incolor}{rgb}{0.0, 0.0, 0.5}
+    \definecolor{outcolor}{rgb}{0.545, 0.0, 0.0}
+
+
 
     
     % Prevent overflowing lines due to hard-to-break entities
@@ -360,254 +278,538 @@
       }
     % Slightly bigger margins than the latex defaults
     
-    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    \geometry{verbose,tmargin=20mm,bmargin=20mm,lmargin=30mm,rmargin=10mm}
     
     
-
-\begin{document}
-    \hypertarget{ux43bux430ux431ux43eux440ux430ux442ux43eux440ux43dux430ux44f-ux440ux430ux431ux43eux442ux430-2}{%
-\section{Лабораторная работа
-№2}\label{ux43bux430ux431ux43eux440ux430ux442ux43eux440ux43dux430ux44f-ux440ux430ux431ux43eux442ux430-2}}
-
-Цель работы - изучить аналитический (обратной матрицы) и численный
-(Брауна-Робинсона) методы нахождения смешанных стратегий в
+    \usepackage{tabularx, calc, stackrel}
+    \usepackage{graphicx}
+    \linespread{1.5}
+    \usepackage{indentfirst}
+    \begin{document}
+    
+    \include{title}
+    
+\emph{Цель работы} - изучить аналитический (обратной матрицы) и
+численный (Брауна-Робинсона) методы нахождения смешанных стратегий в
 антагонистической игре двух лиц в нормальной форме.
 
-\hypertarget{ux43fux43eux441ux442ux430ux43dux43eux432ux43aux430-ux437ux430ux434ux430ux447ux438}{%
-\subsection{Постановка
-задачи}\label{ux43fux43eux441ux442ux430ux43dux43eux432ux43aux430-ux437ux430ux434ux430ux447ux438}}
+\section*{\centering Постановка задачи и методические
+указания}\label{ux43fux43eux441ux442ux430ux43dux43eux432ux43aux430-ux437ux430ux434ux430ux447ux438-ux438-ux43cux435ux442ux43eux434ux438ux447ux435ux441ux43aux438ux435-ux443ux43aux430ux437ux430ux43dux438ux44f}
 
 Найдите цену игры и оптимальные стратегии обоих игроков методами
 обратной матрицы и Брауна-Робинсон. Сравните полученные результаты.
 
-    \hypertarget{ux445ux43eux434-ux440ux430ux431ux43eux442ux44b}{%
-\subsection{Ход
-работы}\label{ux445ux43eux434-ux440ux430ux431ux43eux442ux44b}}
+Отчет должен содержать: титульный лист; цель работы; постановку задачи;
+решение матричной игры аналитическим методом; этапы решения матричной
+игры в смешанных стратегиях численным методом Брауна-Робинсон за обоих
+игроков (в виде таблицы и графиков) до уровня погрешности
+\(\varepsilon \leq 0,1\); сравнительную оценку погрешностей, полученных
+аналитически и приближенным решением.
 
-Вариант 5.
+    \section*{\centering Ход
+работы}\label{ux445ux43eux434-ux440ux430ux431ux43eux442ux44b}
 
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{16}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{pretty\PYZus{}print\PYZus{}default}\PY{p}{(}\PY{k+kc}{False}\PY{p}{)}
-\PY{n}{latex}\PY{o}{.}\PY{n}{add\PYZus{}to\PYZus{}preamble}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}\PYZbs{}}\PY{l+s+s2}{usepackage[russian]}\PY{l+s+si}{\PYZob{}babel\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
-\PY{k+kn}{from} \PY{n+nn}{IPython}\PY{n+nn}{.}\PY{n+nn}{display} \PY{k+kn}{import} \PY{n}{display}\PY{p}{,} \PY{n}{Math}\PY{p}{,} \PY{n}{Latex}
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}1}]:} \PY{k+kn}{from} \PY{n+nn}{IPython}\PY{n+nn}{.}\PY{n+nn}{display} \PY{k}{import} \PY{n}{display}\PY{p}{,} \PY{n}{Math}\PY{p}{,} \PY{n}{Latex}
+        \PY{n}{pretty\PYZus{}print\PYZus{}default}\PY{p}{(}\PY{k+kc}{False}\PY{p}{)}
 \end{Verbatim}
-\end{tcolorbox}
 
     Зададим матрицу игры:
 
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{2}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{C} \PY{o}{=} \PY{n}{matrix}\PY{p}{(}\PY{n}{SR}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{8}\PY{p}{,} \PY{l+m+mi}{12}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{,} \PY{l+m+mi}{19}\PY{p}{,} \PY{l+m+mi}{17}\PY{p}{,} \PY{l+m+mi}{11}\PY{p}{,} \PY{l+m+mi}{11}\PY{p}{]}\PY{p}{)}
-\PY{n}{C}
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}2}]:} \PY{n}{C} \PY{o}{=} \PY{n}{matrix}\PY{p}{(}\PY{n}{SR}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{8}\PY{p}{,} \PY{l+m+mi}{12}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{,} \PY{l+m+mi}{19}\PY{p}{,} \PY{l+m+mi}{17}\PY{p}{,} \PY{l+m+mi}{11}\PY{p}{,} \PY{l+m+mi}{11}\PY{p}{]}\PY{p}{)}
+        \PY{n}{display}\PY{p}{(}\PY{n}{Math}\PY{p}{(}\PY{n}{latex}\PY{p}{(}\PY{n}{C}\PY{p}{)}\PY{p}{)}\PY{p}{)}
 \end{Verbatim}
-\end{tcolorbox}
 
-            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
-\prompt{Out}{outcolor}{2}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-[ 8 12 10]
-[ 1  6 19]
-[17 11 11]
-\end{Verbatim}
-\end{tcolorbox}
-        
+    $$\left(\begin{array}{rrr}
+8 & 12 & 10 \\
+1 & 6 & 19 \\
+17 & 11 & 11
+\end{array}\right)$$
+
+    
     Стратегии игрока \(A\):
 
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{3}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{x} \PY{o}{=} \PY{n}{C}\PY{o}{.}\PY{n}{rows}\PY{p}{(}\PY{p}{)}
-\PY{n}{x}
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}3}]:} \PY{n}{x} \PY{o}{=} \PY{n}{C}\PY{o}{.}\PY{n}{rows}\PY{p}{(}\PY{p}{)}
+        \PY{n}{Math}\PY{p}{(}\PY{n}{latex}\PY{p}{(}\PY{n}{table}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{)}\PY{p}{)}
 \end{Verbatim}
-\end{tcolorbox}
+\texttt{\color{outcolor}Out[{\color{outcolor}3}]:}
+    
+    $$\begin{tabular}{lll}
+$\left(8,\,12,\,10\right)$ & $\left(1,\,6,\,19\right)$ & $\left(17,\,11,\,11\right)$ \\
+\end{tabular}$$
 
-            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
-\prompt{Out}{outcolor}{3}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-[(8, 12, 10), (1, 6, 19), (17, 11, 11)]
-\end{Verbatim}
-\end{tcolorbox}
-        
+    
+
     Стратегии игрока \(B\):
 
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{4}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{y} \PY{o}{=} \PY{n}{C}\PY{o}{.}\PY{n}{columns}\PY{p}{(}\PY{p}{)}
-\PY{n}{y}
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}4}]:} \PY{n}{y} \PY{o}{=} \PY{n}{C}\PY{o}{.}\PY{n}{columns}\PY{p}{(}\PY{p}{)}
+        \PY{n}{Math}\PY{p}{(}\PY{n}{latex}\PY{p}{(}\PY{n}{table}\PY{p}{(}\PY{n}{y}\PY{p}{)}\PY{p}{)}\PY{p}{)}
 \end{Verbatim}
-\end{tcolorbox}
+\texttt{\color{outcolor}Out[{\color{outcolor}4}]:}
+    
+    $$\begin{tabular}{lll}
+$\left(8,\,1,\,17\right)$ & $\left(12,\,6,\,11\right)$ & $\left(10,\,19,\,11\right)$ \\
+\end{tabular}$$
 
-            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
-\prompt{Out}{outcolor}{4}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-[(8, 1, 17), (12, 6, 11), (10, 19, 11)]
+    
+
+   \section*{\centering Аналитический
+метод}\label{ux430ux43dux430ux43bux438ux442ux438ux447ux435ux441ux43aux438ux439-ux43cux435ux442ux43eux434}
+
+    Цена игры ищется по формуле
+\(v = \frac{1}{u \cdot C^{-1} \cdot u^{T}}\):
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}5}]:} \PY{n}{u} \PY{o}{=} \PY{n}{matrix}\PY{p}{(}\PY{n}{SR}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{n}{C}\PY{o}{.}\PY{n}{nrows}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{*} \PY{n}{C}\PY{o}{.}\PY{n}{nrows}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+        \PY{n}{v} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{/}\PY{p}{(}\PY{n}{u} \PY{o}{*} \PY{n}{C}\PY{o}{\PYZca{}}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)} \PY{o}{*} \PY{n}{u}\PY{o}{.}\PY{n}{transpose}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+        \PY{n}{Math}\PY{p}{(}\PY{n}{latex}\PY{p}{(}\PY{n}{v}\PY{p}{)}\PY{p}{)}
 \end{Verbatim}
-\end{tcolorbox}
+\texttt{\color{outcolor}Out[{\color{outcolor}5}]:}
+    
+    $$\left(\begin{array}{r}
+\frac{845}{76}
+\end{array}\right)$$
+
+    
+
+    Оптимальные стратегии игрока \(A\) можно найти по формуле
+\(x^{*} = \frac{u \cdot C^{-1}}{u \cdot C^{-1} \cdot u^{T}}\):
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}6}]:} \PY{n}{x\PYZus{}star} \PY{o}{=} \PY{n}{v} \PY{o}{*} \PY{p}{(}\PY{n}{u} \PY{o}{*} \PY{n}{C}\PY{o}{\PYZca{}}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+        \PY{n}{Math}\PY{p}{(}\PY{n}{latex}\PY{p}{(}\PY{n}{x\PYZus{}star}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\texttt{\color{outcolor}Out[{\color{outcolor}6}]:}
+    
+    $$\left(\begin{array}{rrr}
+\frac{39}{76} & \frac{3}{38} & \frac{31}{76}
+\end{array}\right)$$
+
+    
+
+    Оптимальные стратегии игрока \(B\) можно найти по формуле
+\(y^{*} = \frac{C^{-1} \cdot u^{T}}{u \cdot C^{-1} \cdot u^{T}}\):
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}7}]:} \PY{n}{y\PYZus{}star} \PY{o}{=} \PY{n}{v} \PY{o}{*} \PY{p}{(}\PY{n}{C}\PY{o}{\PYZca{}}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)} \PY{o}{*} \PY{n}{u}\PY{o}{.}\PY{n}{transpose}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{o}{.}\PY{n}{transpose}\PY{p}{(}\PY{p}{)}
+        \PY{n}{Math}\PY{p}{(}\PY{n}{latex}\PY{p}{(}\PY{n}{y\PYZus{}star}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\texttt{\color{outcolor}Out[{\color{outcolor}7}]:}
+    
+    $$\left(\begin{array}{rrr}
+\frac{3}{152} & \frac{11}{19} & \frac{61}{152}
+\end{array}\right)$$
+
+    
+
+    \section*{\centering Метод Брауна-Робинсон}\label{ux43cux435ux442ux43eux434-ux431ux440ux430ux443ux43dux430-ux440ux43eux431ux438ux43dux441ux43eux43d}
+
+    Верхняя и нижняя оценки игр:
+
+\[\overline{v}[k] = \max_{i \in A} \sum_{j \in B}c_{ij} \tilde{y}_{j}[k] = \sum_{j \in B}c_{i[k + 1]j}\tilde{y}_{j}[k]\]
+
+\[\underline{v}[k] = \max_{i \in A} \sum_{i \in A}c_{ij} \tilde{x}_{j}[k] = \sum_{i \in A}c_{i[k + 1]j}\tilde{x}_{j}[k]\]
+
+Для оценки игры имеем:
+
+\[\max_{k} \frac{1}{k} \underline{v}[k] \leq v \leq \min_{k} \frac{1}{k} \overline{v}[k]\]
+
+Оценка погрешности:
+
+\[\varepsilon [k] = \min_{k} \frac{1}{k} \overline{v}[k] - \max_{k} \frac{1}{k} \underline{v}[k]\]
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}8}]:} \PY{k}{def} \PY{n+nf}{BrownRobinson}\PY{p}{(}\PY{n}{C}\PY{p}{,} \PY{n}{eps}\PY{p}{)}\PY{p}{:}
+            \PY{n}{x} \PY{o}{=} \PY{n}{C}\PY{o}{.}\PY{n}{rows}\PY{p}{(}\PY{p}{)}
+            \PY{n}{y} \PY{o}{=} \PY{n}{C}\PY{o}{.}\PY{n}{columns}\PY{p}{(}\PY{p}{)}
         
-    \hypertarget{ux430ux43dux430ux43bux438ux442ux438ux447ux435ux441ux43aux438ux439-ux43cux435ux442ux43eux434}{%
-\subsubsection{Аналитический
-метод}\label{ux430ux43dux430ux43bux438ux442ux438ux447ux435ux441ux43aux438ux439-ux43cux435ux442ux43eux434}}
-
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{5}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{u} \PY{o}{=} \PY{n}{matrix}\PY{p}{(}\PY{n}{SR}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{n}{C}\PY{o}{.}\PY{n}{nrows}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{*} \PY{n}{C}\PY{o}{.}\PY{n}{nrows}\PY{p}{(}\PY{p}{)}\PY{p}{)}
-\PY{n}{v} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{/}\PY{p}{(}\PY{n}{u} \PY{o}{*} \PY{n}{C}\PY{o}{\PYZca{}}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)} \PY{o}{*} \PY{n}{u}\PY{o}{.}\PY{n}{transpose}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{p}{)}
-\PY{n}{v}
-\end{Verbatim}
-\end{tcolorbox}
-
-            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
-\prompt{Out}{outcolor}{5}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-[845/76]
-\end{Verbatim}
-\end{tcolorbox}
+            \PY{n}{ki}\PY{p}{,} \PY{n}{xk}\PY{p}{,} \PY{n}{yk}\PY{p}{,} \PY{n}{ei} \PY{o}{=} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{n}{eps} \PY{o}{+} \PY{l+m+mi}{1}
         
-    Оптимальные стратегии игрока \(A\):
-
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{6}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{x\PYZus{}star} \PY{o}{=} \PY{n}{v} \PY{o}{*} \PY{p}{(}\PY{n}{u} \PY{o}{*} \PY{n}{C}\PY{o}{\PYZca{}}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
-\PY{n}{x\PYZus{}star}
-\end{Verbatim}
-\end{tcolorbox}
-
-            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
-\prompt{Out}{outcolor}{6}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-[39/76  3/38 31/76]
-\end{Verbatim}
-\end{tcolorbox}
+            \PY{n}{winA} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{*} \PY{n}{C}\PY{o}{.}\PY{n}{nrows}\PY{p}{(}\PY{p}{)}
+            \PY{n}{lossB} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{*} \PY{n}{C}\PY{o}{.}\PY{n}{ncols}\PY{p}{(}\PY{p}{)}
         
-    Оптимальные стратегии игрока \(B\):
-
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{7}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{y\PYZus{}star} \PY{o}{=} \PY{n}{v} \PY{o}{*} \PY{p}{(}\PY{n}{C}\PY{o}{\PYZca{}}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)} \PY{o}{*} \PY{n}{u}\PY{o}{.}\PY{n}{transpose}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{o}{.}\PY{n}{transpose}\PY{p}{(}\PY{p}{)}
-\PY{n}{y\PYZus{}star}
-\end{Verbatim}
-\end{tcolorbox}
-
-            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
-\prompt{Out}{outcolor}{7}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-[ 3/152  11/19 61/152]
-\end{Verbatim}
-\end{tcolorbox}
+            \PY{n}{vxk}\PY{p}{,} \PY{n}{vyk} \PY{o}{=} \PY{n+nb}{dict}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n+nb}{dict}\PY{p}{(}\PY{p}{)}
+            \PY{n}{v}\PY{p}{,} \PY{n}{vx}\PY{p}{,} \PY{n}{vy} \PY{o}{=} \PY{p}{[}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{p}{]}
+            \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{C}\PY{o}{.}\PY{n}{nrows}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+                \PY{n}{vxk}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{,} \PY{n}{vyk}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}
         
-    \hypertarget{ux43cux435ux442ux43eux434-ux431ux440ux430ux443ux43dux430-ux440ux43eux431ux438ux43dux441ux43eux43d}{%
-\subsubsection{Метод
-Брауна-Робинсон}\label{ux43cux435ux442ux43eux434-ux431ux440ux430ux443ux43dux430-ux440ux43eux431ux438ux43dux441ux43eux43d}}
-
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{18}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{k} \PY{o}{=} \PY{l+m+mi}{12} \PY{c+c1}{\PYZsh{} Число итераций}
-
-\PY{n}{xk}\PY{p}{,} \PY{n}{yk} \PY{o}{=} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}
-
-\PY{n}{winA} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{*} \PY{n}{C}\PY{o}{.}\PY{n}{nrows}\PY{p}{(}\PY{p}{)}
-\PY{n}{lossB} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{*} \PY{n}{C}\PY{o}{.}\PY{n}{ncols}\PY{p}{(}\PY{p}{)}
-
-\PY{n}{vxk}\PY{p}{,} \PY{n}{vyk} \PY{o}{=} \PY{n+nb}{dict}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n+nb}{dict}\PY{p}{(}\PY{p}{)}
-\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{C}\PY{o}{.}\PY{n}{nrows}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{p}{:}
-    \PY{n}{vxk}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{,} \PY{n}{vyk}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}
-
-\PY{n}{rows} \PY{o}{=} \PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}k\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Выбор игрока \PYZdl{}A\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Выбор игрока \PYZdl{}B\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Выигрыш \PYZdl{}A\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Проигрыш \PYZdl{}B\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{overline}\PY{l+s+si}{\PYZob{}v\PYZcb{}}\PY{l+s+s1}{\PYZca{}}\PY{l+s+si}{\PYZob{}k\PYZcb{}}\PY{l+s+s1}{\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{underline}\PY{l+s+si}{\PYZob{}v\PYZcb{}}\PY{l+s+s1}{\PYZca{}}\PY{l+s+si}{\PYZob{}k\PYZcb{}}\PY{l+s+s1}{\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}}\PY{l+s+se}{\PYZbs{}\PYZbs{}}\PY{l+s+s1}{varepsilon\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}
-\PY{k}{for} \PY{n}{ki} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{k} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
-    \PY{n}{winA} \PY{o}{=} \PY{p}{[}\PY{n}{xi} \PY{o}{+} \PY{n}{yi} \PY{k}{for} \PY{n}{xi}\PY{p}{,} \PY{n}{yi} \PY{o+ow}{in} \PY{n+nb}{zip}\PY{p}{(}\PY{n}{winA}\PY{p}{,} \PY{n}{y}\PY{p}{[}\PY{n}{yk}\PY{p}{]}\PY{p}{)}\PY{p}{]}
-    \PY{n}{lossB} \PY{o}{=} \PY{p}{[}\PY{n}{xi} \PY{o}{+} \PY{n}{yi} \PY{k}{for} \PY{n}{xi}\PY{p}{,} \PY{n}{yi} \PY{o+ow}{in} \PY{n+nb}{zip}\PY{p}{(}\PY{n}{lossB}\PY{p}{,} \PY{n}{x}\PY{p}{[}\PY{n}{xk}\PY{p}{]}\PY{p}{)}\PY{p}{]}
-
-    \PY{n}{maxX} \PY{o}{=} \PY{n+nb}{max}\PY{p}{(}\PY{n}{winA}\PY{p}{)}
-    \PY{n}{minY} \PY{o}{=} \PY{n+nb}{min}\PY{p}{(}\PY{n}{lossB}\PY{p}{)}
-
-    \PY{n}{vxk}\PY{p}{[}\PY{n}{xk}\PY{p}{]} \PY{o}{+}\PY{o}{=} \PY{l+m+mi}{1}
-    \PY{n}{vyk}\PY{p}{[}\PY{n}{yk}\PY{p}{]} \PY{o}{+}\PY{o}{=} \PY{l+m+mi}{1}
-
-    \PY{n}{rows}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{p}{[}\PY{n}{ki}\PY{p}{,} \PY{n}{xk} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{,} \PY{n}{yk} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{,} \PY{n}{winA}\PY{p}{,} \PY{n}{lossB}\PY{p}{,} \PY{n}{maxX} \PY{o}{/} \PY{n}{ki}\PY{p}{,} \PY{n}{minY} \PY{o}{/} \PY{n}{ki}\PY{p}{,} \PY{n}{maxX} \PY{o}{/} \PY{n}{ki} \PY{o}{\PYZhy{}} \PY{n}{minY} \PY{o}{/} \PY{n}{ki}\PY{p}{]}\PY{p}{)}
-
-    \PY{n}{countX} \PY{o}{=} \PY{n}{winA}\PY{o}{.}\PY{n}{count}\PY{p}{(}\PY{n}{maxX}\PY{p}{)}
-    \PY{n}{countY} \PY{o}{=} \PY{n}{lossB}\PY{o}{.}\PY{n}{count}\PY{p}{(}\PY{n}{minY}\PY{p}{)}
-
-    \PY{n}{xk} \PY{o}{=} \PY{n}{winA}\PY{o}{.}\PY{n}{index}\PY{p}{(}\PY{n}{maxX}\PY{p}{)}
-    \PY{n}{yk} \PY{o}{=} \PY{n}{lossB}\PY{o}{.}\PY{n}{index}\PY{p}{(}\PY{n}{minY}\PY{p}{)}
-
-    \PY{k}{if} \PY{n}{countX} \PY{o}{\PYZgt{}} \PY{l+m+mi}{1} \PY{o+ow}{and} \PY{n}{countY} \PY{o}{\PYZgt{}} \PY{l+m+mi}{1}\PY{p}{:}
-        \PY{k}{raise} \PY{n+ne}{Exception}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Should not be at all}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
-    \PY{k}{elif} \PY{n}{countX} \PY{o}{==} \PY{l+m+mi}{1} \PY{o+ow}{and} \PY{n}{countY} \PY{o}{\PYZgt{}} \PY{l+m+mi}{1}\PY{p}{:}
-        \PY{k}{if} \PY{n}{lossB}\PY{p}{[}\PY{n}{xk}\PY{p}{]} \PY{o}{==} \PY{n}{minY}\PY{p}{:}
-            \PY{n}{yk} \PY{o}{=} \PY{n}{xk}
-    \PY{k}{elif} \PY{n}{countY} \PY{o}{==} \PY{l+m+mi}{1} \PY{o+ow}{and} \PY{n}{countX} \PY{o}{\PYZgt{}} \PY{l+m+mi}{1}\PY{p}{:}
-        \PY{k}{if} \PY{n}{winA}\PY{p}{[}\PY{n}{yk}\PY{p}{]} \PY{o}{==} \PY{n}{maxX}\PY{p}{:}
-            \PY{n}{xk} \PY{o}{=} \PY{n}{yk}
-
-\PY{n}{display}\PY{p}{(}\PY{n}{latex}\PY{p}{(}\PY{n}{table}\PY{p}{(}\PY{n}{rows}\PY{p}{)}\PY{p}{)}\PY{p}{)}
-\end{Verbatim}
-\end{tcolorbox}
-
-            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
-\prompt{Out}{outcolor}{18}{\boxspacing}
-\begin{tabular}{llllllll}
-    $k$ & Выбор игрока $A$ & Выбор игрока $B$ & Выигрыш $A$ & Проигрыш $B$ & $\overline{v}^{k}$ & $\underline{v}^{k}$ & $\varepsilon$ \\
-    $1$ & $1$ & $1$ & $\left[8, 1, 17\right]$ & $\left[8, 12, 10\right]$ & $17$ & $8$ & $9$ \\
-    $2$ & $3$ & $1$ & $\left[16, 2, 34\right]$ & $\left[25, 23, 21\right]$ & $17$ & $\frac{21}{2}$ & $\frac{13}{2}$ \\
-    $3$ & $3$ & $3$ & $\left[26, 21, 45\right]$ & $\left[42, 34, 32\right]$ & $15$ & $\frac{32}{3}$ & $\frac{13}{3}$ \\
-    $4$ & $3$ & $3$ & $\left[36, 40, 56\right]$ & $\left[59, 45, 43\right]$ & $14$ & $\frac{43}{4}$ & $\frac{13}{4}$ \\
-    $5$ & $3$ & $3$ & $\left[46, 59, 67\right]$ & $\left[76, 56, 54\right]$ & $\frac{67}{5}$ & $\frac{54}{5}$ & $\frac{13}{5}$ \\
-    $6$ & $3$ & $3$ & $\left[56, 78, 78\right]$ & $\left[93, 67, 65\right]$ & $13$ & $\frac{65}{6}$ & $\frac{13}{6}$ \\
-    $7$ & $3$ & $3$ & $\left[66, 97, 89\right]$ & $\left[110, 78, 76\right]$ & $\frac{97}{7}$ & $\frac{76}{7}$ & $3$ \\
-    $8$ & $2$ & $3$ & $\left[76, 116, 100\right]$ & $\left[111, 84, 95\right]$ & $\frac{29}{2}$ & $\frac{21}{2}$ & $4$ \\
-    $9$ & $2$ & $2$ & $\left[88, 122, 111\right]$ & $\left[112, 90, 114\right]$ & $\frac{122}{9}$ & $10$ & $\frac{32}{9}$ \\
-    $10$ & $2$ & $2$ & $\left[100, 128, 122\right]$ & $\left[113, 96, 133\right]$ & $\frac{64}{5}$ & $\frac{48}{5}$ & $\frac{16}{5}$ \\
-    $11$ & $2$ & $2$ & $\left[112, 134, 133\right]$ & $\left[114, 102, 152\right]$ & $\frac{134}{11}$ & $\frac{102}{11}$ & $\frac{32}{11}$ \\
-    $12$ & $2$ & $2$ & $\left[124, 140, 144\right]$ & $\left[115, 108, 171\right]$ & $12$ & $9$ & $3$ \\
-    \end{tabular}
-\end{tcolorbox}
+            \PY{n}{rows} \PY{o}{=} \PY{p}{[}\PY{p}{[}
+                \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}k\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
+                \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Выбор игрока \PYZdl{}A\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
+                \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Выбор игрока \PYZdl{}B\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
+                \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Выигрыш \PYZdl{}A\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
+                \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Проигрыш \PYZdl{}B\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
+                \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}}\PY{l+s+se}{\PYZbs{}\PYZbs{}}\PY{l+s+s1}{overline}\PY{l+s+si}{\PYZob{}v\PYZcb{}}\PY{l+s+s1}{\PYZca{}}\PY{l+s+si}{\PYZob{}k\PYZcb{}}\PY{l+s+s1}{\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
+                \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}}\PY{l+s+se}{\PYZbs{}\PYZbs{}}\PY{l+s+s1}{underline}\PY{l+s+si}{\PYZob{}v\PYZcb{}}\PY{l+s+s1}{\PYZca{}}\PY{l+s+si}{\PYZob{}k\PYZcb{}}\PY{l+s+s1}{\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
+                \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}}\PY{l+s+se}{\PYZbs{}\PYZbs{}}\PY{l+s+s1}{varepsilon\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
+                \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}v\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}
+            \PY{p}{]}\PY{p}{]}
+            \PY{k}{while} \PY{n}{ei} \PY{o}{\PYZgt{}} \PY{n}{eps}\PY{p}{:}
+                \PY{n}{winA} \PY{o}{=} \PY{p}{[}\PY{n}{xi} \PY{o}{+} \PY{n}{yi} \PY{k}{for} \PY{n}{xi}\PY{p}{,} \PY{n}{yi} \PY{o+ow}{in} \PY{n+nb}{zip}\PY{p}{(}\PY{n}{winA}\PY{p}{,} \PY{n}{y}\PY{p}{[}\PY{n}{yk}\PY{p}{]}\PY{p}{)}\PY{p}{]}
+                \PY{n}{lossB} \PY{o}{=} \PY{p}{[}\PY{n}{xi} \PY{o}{+} \PY{n}{yi} \PY{k}{for} \PY{n}{xi}\PY{p}{,} \PY{n}{yi} \PY{o+ow}{in} \PY{n+nb}{zip}\PY{p}{(}\PY{n}{lossB}\PY{p}{,} \PY{n}{x}\PY{p}{[}\PY{n}{xk}\PY{p}{]}\PY{p}{)}\PY{p}{]}
         
-    Тогда оптимальные стратегии для игрока \(A\):
-
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{9}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{x\PYZus{}strategies} \PY{o}{=} \PY{n}{matrix}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{p}{[}\PY{n}{i} \PY{o}{/} \PY{n}{k} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{vxk}\PY{o}{.}\PY{n}{values}\PY{p}{(}\PY{p}{)}\PY{p}{]}\PY{p}{)}
-\PY{n}{x\PYZus{}strategies}
-\end{Verbatim}
-\end{tcolorbox}
-
-            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
-\prompt{Out}{outcolor}{9}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-[1/12 5/12  1/2]
-\end{Verbatim}
-\end{tcolorbox}
+                \PY{n}{maxX}\PY{p}{,} \PY{n}{minY} \PY{o}{=} \PY{n+nb}{max}\PY{p}{(}\PY{n}{winA}\PY{p}{)}\PY{p}{,} \PY{n+nb}{min}\PY{p}{(}\PY{n}{lossB}\PY{p}{)}
         
+                \PY{n}{vxk}\PY{p}{[}\PY{n}{xk}\PY{p}{]} \PY{o}{+}\PY{o}{=} \PY{l+m+mi}{1}
+                \PY{n}{vyk}\PY{p}{[}\PY{n}{yk}\PY{p}{]} \PY{o}{+}\PY{o}{=} \PY{l+m+mi}{1}
+                \PY{n}{vx}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{maxX} \PY{o}{/} \PY{n}{ki}\PY{p}{)}
+                \PY{n}{vy}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{minY} \PY{o}{/} \PY{n}{ki}\PY{p}{)}
+                \PY{n}{ei} \PY{o}{=} \PY{n+nb}{min}\PY{p}{(}\PY{n}{vx}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n+nb}{max}\PY{p}{(}\PY{n}{vy}\PY{p}{)}
+                \PY{n}{v}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{p}{(}\PY{n+nb}{min}\PY{p}{(}\PY{n}{vx}\PY{p}{)} \PY{o}{+} \PY{n+nb}{max}\PY{p}{(}\PY{n}{vy}\PY{p}{)}\PY{p}{)} \PY{o}{/} \PY{l+m+mi}{2}\PY{p}{)}
+                \PY{n}{rows}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{p}{[}\PY{n}{ki}\PY{p}{,} \PY{n}{xk} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{,} \PY{n}{yk} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{,} \PY{n}{winA}\PY{p}{,} \PY{n}{lossB}\PY{p}{,} \PY{n}{vx}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{vy}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{ei}\PY{p}{,} \PY{n}{v}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+        
+                \PY{n}{countX} \PY{o}{=} \PY{n}{winA}\PY{o}{.}\PY{n}{count}\PY{p}{(}\PY{n}{maxX}\PY{p}{)}
+                \PY{n}{countY} \PY{o}{=} \PY{n}{lossB}\PY{o}{.}\PY{n}{count}\PY{p}{(}\PY{n}{minY}\PY{p}{)}
+        
+                \PY{n}{xk} \PY{o}{=} \PY{n}{winA}\PY{o}{.}\PY{n}{index}\PY{p}{(}\PY{n}{maxX}\PY{p}{)}
+                \PY{n}{yk} \PY{o}{=} \PY{n}{lossB}\PY{o}{.}\PY{n}{index}\PY{p}{(}\PY{n}{minY}\PY{p}{)}
+        
+                \PY{k}{if} \PY{n}{countX} \PY{o}{\PYZgt{}} \PY{l+m+mi}{1} \PY{o+ow}{and} \PY{n}{countY} \PY{o}{\PYZgt{}} \PY{l+m+mi}{1}\PY{p}{:}
+                    \PY{k}{pass}
+                \PY{k}{elif} \PY{n}{countX} \PY{o}{==} \PY{l+m+mi}{1} \PY{o+ow}{and} \PY{n}{countY} \PY{o}{\PYZgt{}} \PY{l+m+mi}{1}\PY{p}{:}
+                    \PY{k}{if} \PY{n}{lossB}\PY{p}{[}\PY{n}{xk}\PY{p}{]} \PY{o}{==} \PY{n}{minY}\PY{p}{:}
+                        \PY{n}{yk} \PY{o}{=} \PY{n}{xk}
+                \PY{k}{elif} \PY{n}{countY} \PY{o}{==} \PY{l+m+mi}{1} \PY{o+ow}{and} \PY{n}{countX} \PY{o}{\PYZgt{}} \PY{l+m+mi}{1}\PY{p}{:}
+                    \PY{k}{if} \PY{n}{winA}\PY{p}{[}\PY{n}{yk}\PY{p}{]} \PY{o}{==} \PY{n}{maxX}\PY{p}{:}
+                        \PY{n}{xk} \PY{o}{=} \PY{n}{yk}
+                \PY{n}{ki} \PY{o}{+}\PY{o}{=} \PY{l+m+mi}{1}
+            \PY{n}{x\PYZus{}strategies} \PY{o}{=} \PY{n}{matrix}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{p}{[}\PY{n}{i} \PY{o}{/} \PY{p}{(}\PY{n}{ki} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{p}{)} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{vxk}\PY{o}{.}\PY{n}{values}\PY{p}{(}\PY{p}{)}\PY{p}{]}\PY{p}{)}
+            \PY{n}{y\PYZus{}strategies} \PY{o}{=} \PY{n}{matrix}\PY{p}{(}\PY{p}{[}\PY{n}{i} \PY{o}{/} \PY{p}{(}\PY{n}{ki} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{p}{)} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{vyk}\PY{o}{.}\PY{n}{values}\PY{p}{(}\PY{p}{)}\PY{p}{]}\PY{p}{)}
+            \PY{k}{return} \PY{n}{v}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{x\PYZus{}strategies}\PY{p}{,} \PY{n}{y\PYZus{}strategies}\PY{p}{,} \PY{n}{rows}
+        
+        \PY{n}{cost}\PY{p}{,} \PY{n}{x\PYZus{}strategies}\PY{p}{,} \PY{n}{y\PYZus{}strategies}\PY{p}{,} \PY{n}{rows} \PY{o}{=} \PY{n}{BrownRobinson}\PY{p}{(}\PY{n}{C}\PY{p}{,} \PY{l+m+mi}{1}\PY{o}{/}\PY{l+m+mi}{10}\PY{p}{)}
+        \PY{n}{display}\PY{p}{(}\PY{n}{Math}\PY{p}{(}\PY{n}{latex}\PY{p}{(}\PY{n}{table}\PY{p}{(}\PY{n}{rows}\PY{p}{)}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{longtable}{lllllllll}
+$k$ & Выбор $A$ & Выбор $B$ & Выигрыш $A$ & Проигрыш $B$ & $\overline{v}^{k}$ & $\underline{v}^{k}$ & $\varepsilon$ & $v$ \\
+$1$ & $1$ & $1$ & $\left[8, 1, 17\right]$ & $\left[8, 12, 10\right]$ & $17$ & $8$ & $9$ & $\frac{25}{2}$ \\
+$2$ & $3$ & $1$ & $\left[16, 2, 34\right]$ & $\left[25, 23, 21\right]$ & $17$ & $\frac{21}{2}$ & $\frac{13}{2}$ & $\frac{55}{4}$ \\
+$3$ & $3$ & $3$ & $\left[26, 21, 45\right]$ & $\left[42, 34, 32\right]$ & $15$ & $\frac{32}{3}$ & $\frac{13}{3}$ & $\frac{77}{6}$ \\
+$4$ & $3$ & $3$ & $\left[36, 40, 56\right]$ & $\left[59, 45, 43\right]$ & $14$ & $\frac{43}{4}$ & $\frac{13}{4}$ & $\frac{99}{8}$ \\
+$5$ & $3$ & $3$ & $\left[46, 59, 67\right]$ & $\left[76, 56, 54\right]$ & $\frac{67}{5}$ & $\frac{54}{5}$ & $\frac{13}{5}$ & $\frac{121}{10}$ \\
+$6$ & $3$ & $3$ & $\left[56, 78, 78\right]$ & $\left[93, 67, 65\right]$ & $13$ & $\frac{65}{6}$ & $\frac{13}{6}$ & $\frac{143}{12}$ \\
+$7$ & $3$ & $3$ & $\left[66, 97, 89\right]$ & $\left[110, 78, 76\right]$ & $\frac{97}{7}$ & $\frac{76}{7}$ & $\frac{15}{7}$ & $\frac{167}{14}$ \\
+$8$ & $2$ & $3$ & $\left[76, 116, 100\right]$ & $\left[111, 84, 95\right]$ & $\frac{29}{2}$ & $\frac{21}{2}$ & $\frac{15}{7}$ & $\frac{167}{14}$ \\
+$9$ & $2$ & $2$ & $\left[88, 122, 111\right]$ & $\left[112, 90, 114\right]$ & $\frac{122}{9}$ & $10$ & $\frac{15}{7}$ & $\frac{167}{14}$ \\
+$10$ & $2$ & $2$ & $\left[100, 128, 122\right]$ & $\left[113, 96, 133\right]$ & $\frac{64}{5}$ & $\frac{48}{5}$ & $\frac{68}{35}$ & $\frac{414}{35}$ \\
+$11$ & $2$ & $2$ & $\left[112, 134, 133\right]$ & $\left[114, 102, 152\right]$ & $\frac{134}{11}$ & $\frac{102}{11}$ & $\frac{102}{77}$ & $\frac{887}{77}$ \\
+$12$ & $2$ & $2$ & $\left[124, 140, 144\right]$ & $\left[115, 108, 171\right]$ & $12$ & $9$ & $\frac{8}{7}$ & $\frac{80}{7}$ \\
+$13$ & $3$ & $2$ & $\left[136, 146, 155\right]$ & $\left[132, 119, 182\right]$ & $\frac{155}{13}$ & $\frac{119}{13}$ & $\frac{97}{91}$ & $\frac{2073}{182}$ \\
+$14$ & $3$ & $2$ & $\left[148, 152, 166\right]$ & $\left[149, 130, 193\right]$ & $\frac{83}{7}$ & $\frac{65}{7}$ & $1$ & $\frac{159}{14}$ \\
+$15$ & $3$ & $2$ & $\left[160, 158, 177\right]$ & $\left[166, 141, 204\right]$ & $\frac{59}{5}$ & $\frac{47}{5}$ & $\frac{33}{35}$ & $\frac{793}{70}$ \\
+$16$ & $3$ & $2$ & $\left[172, 164, 188\right]$ & $\left[183, 152, 215\right]$ & $\frac{47}{4}$ & $\frac{19}{2}$ & $\frac{25}{28}$ & $\frac{633}{56}$ \\
+$17$ & $3$ & $2$ & $\left[184, 170, 199\right]$ & $\left[200, 163, 226\right]$ & $\frac{199}{17}$ & $\frac{163}{17}$ & $\frac{101}{119}$ & $\frac{2685}{238}$ \\
+$18$ & $3$ & $2$ & $\left[196, 176, 210\right]$ & $\left[217, 174, 237\right]$ & $\frac{35}{3}$ & $\frac{29}{3}$ & $\frac{17}{21}$ & $\frac{473}{42}$ \\
+$19$ & $3$ & $2$ & $\left[208, 182, 221\right]$ & $\left[234, 185, 248\right]$ & $\frac{221}{19}$ & $\frac{185}{19}$ & $\frac{103}{133}$ & $\frac{2991}{266}$ \\
+$20$ & $3$ & $2$ & $\left[220, 188, 232\right]$ & $\left[251, 196, 259\right]$ & $\frac{58}{5}$ & $\frac{49}{5}$ & $\frac{26}{35}$ & $\frac{393}{35}$ \\
+$21$ & $3$ & $2$ & $\left[232, 194, 243\right]$ & $\left[268, 207, 270\right]$ & $\frac{81}{7}$ & $\frac{69}{7}$ & $\frac{5}{7}$ & $\frac{157}{14}$ \\
+$22$ & $3$ & $2$ & $\left[244, 200, 254\right]$ & $\left[285, 218, 281\right]$ & $\frac{127}{11}$ & $\frac{109}{11}$ & $\frac{53}{77}$ & $\frac{1725}{154}$ \\
+$23$ & $3$ & $2$ & $\left[256, 206, 265\right]$ & $\left[302, 229, 292\right]$ & $\frac{265}{23}$ & $\frac{229}{23}$ & $\frac{107}{161}$ & $\frac{3603}{322}$ \\
+$24$ & $3$ & $2$ & $\left[268, 212, 276\right]$ & $\left[319, 240, 303\right]$ & $\frac{23}{2}$ & $10$ & $\frac{9}{14}$ & $\frac{313}{28}$ \\
+$25$ & $3$ & $2$ & $\left[280, 218, 287\right]$ & $\left[336, 251, 314\right]$ & $\frac{287}{25}$ & $\frac{251}{25}$ & $\frac{109}{175}$ & $\frac{3909}{350}$ \\
+$26$ & $3$ & $2$ & $\left[292, 224, 298\right]$ & $\left[353, 262, 325\right]$ & $\frac{149}{13}$ & $\frac{131}{13}$ & $\frac{55}{91}$ & $\frac{2031}{182}$ \\
+$27$ & $3$ & $2$ & $\left[304, 230, 309\right]$ & $\left[370, 273, 336\right]$ & $\frac{103}{9}$ & $\frac{91}{9}$ & $\frac{37}{63}$ & $\frac{1405}{126}$ \\
+$28$ & $3$ & $2$ & $\left[316, 236, 320\right]$ & $\left[387, 284, 347\right]$ & $\frac{80}{7}$ & $\frac{71}{7}$ & $\frac{4}{7}$ & $\frac{78}{7}$ \\
+$29$ & $3$ & $2$ & $\left[328, 242, 331\right]$ & $\left[404, 295, 358\right]$ & $\frac{331}{29}$ & $\frac{295}{29}$ & $\frac{113}{203}$ & $\frac{4521}{406}$ \\
+$30$ & $3$ & $2$ & $\left[340, 248, 342\right]$ & $\left[421, 306, 369\right]$ & $\frac{57}{5}$ & $\frac{51}{5}$ & $\frac{19}{35}$ & $\frac{779}{70}$ \\
+$31$ & $3$ & $2$ & $\left[352, 254, 353\right]$ & $\left[438, 317, 380\right]$ & $\frac{353}{31}$ & $\frac{317}{31}$ & $\frac{115}{217}$ & $\frac{4827}{434}$ \\
+$32$ & $3$ & $2$ & $\left[364, 260, 364\right]$ & $\left[455, 328, 391\right]$ & $\frac{91}{8}$ & $\frac{41}{4}$ & $\frac{29}{56}$ & $\frac{1245}{112}$ \\
+$33$ & $1$ & $2$ & $\left[376, 266, 375\right]$ & $\left[463, 340, 401\right]$ & $\frac{376}{33}$ & $\frac{340}{33}$ & $\frac{29}{56}$ & $\frac{1245}{112}$ \\
+$34$ & $1$ & $2$ & $\left[388, 272, 386\right]$ & $\left[471, 352, 411\right]$ & $\frac{194}{17}$ & $\frac{176}{17}$ & $\frac{29}{56}$ & $\frac{1245}{112}$ \\
+$35$ & $1$ & $2$ & $\left[400, 278, 397\right]$ & $\left[479, 364, 421\right]$ & $\frac{80}{7}$ & $\frac{52}{5}$ & $\frac{29}{56}$ & $\frac{1245}{112}$ \\
+$36$ & $1$ & $2$ & $\left[412, 284, 408\right]$ & $\left[487, 376, 431\right]$ & $\frac{103}{9}$ & $\frac{94}{9}$ & $\frac{29}{56}$ & $\frac{1245}{112}$ \\
+$37$ & $1$ & $2$ & $\left[424, 290, 419\right]$ & $\left[495, 388, 441\right]$ & $\frac{424}{37}$ & $\frac{388}{37}$ & $\frac{29}{56}$ & $\frac{1245}{112}$ \\
+$38$ & $1$ & $2$ & $\left[436, 296, 430\right]$ & $\left[503, 400, 451\right]$ & $\frac{218}{19}$ & $\frac{200}{19}$ & $\frac{29}{56}$ & $\frac{1245}{112}$ \\
+$39$ & $1$ & $2$ & $\left[448, 302, 441\right]$ & $\left[511, 412, 461\right]$ & $\frac{448}{39}$ & $\frac{412}{39}$ & $\frac{29}{56}$ & $\frac{1245}{112}$ \\
+$40$ & $1$ & $2$ & $\left[460, 308, 452\right]$ & $\left[519, 424, 471\right]$ & $\frac{23}{2}$ & $\frac{53}{5}$ & $\frac{29}{56}$ & $\frac{1245}{112}$ \\
+$41$ & $1$ & $2$ & $\left[472, 314, 463\right]$ & $\left[527, 436, 481\right]$ & $\frac{472}{41}$ & $\frac{436}{41}$ & $\frac{29}{56}$ & $\frac{1245}{112}$ \\
+$42$ & $1$ & $2$ & $\left[484, 320, 474\right]$ & $\left[535, 448, 491\right]$ & $\frac{242}{21}$ & $\frac{32}{3}$ & $\frac{29}{56}$ & $\frac{1245}{112}$ \\
+$43$ & $1$ & $2$ & $\left[496, 326, 485\right]$ & $\left[543, 460, 501\right]$ & $\frac{496}{43}$ & $\frac{460}{43}$ & $\frac{29}{56}$ & $\frac{1245}{112}$ \\
+$44$ & $1$ & $2$ & $\left[508, 332, 496\right]$ & $\left[551, 472, 511\right]$ & $\frac{127}{11}$ & $\frac{118}{11}$ & $\frac{29}{56}$ & $\frac{1245}{112}$ \\
+$45$ & $1$ & $2$ & $\left[520, 338, 507\right]$ & $\left[559, 484, 521\right]$ & $\frac{104}{9}$ & $\frac{484}{45}$ & $\frac{29}{56}$ & $\frac{1245}{112}$ \\
+$46$ & $1$ & $2$ & $\left[532, 344, 518\right]$ & $\left[567, 496, 531\right]$ & $\frac{266}{23}$ & $\frac{248}{23}$ & $\frac{29}{56}$ & $\frac{1245}{112}$ \\
+$47$ & $1$ & $2$ & $\left[544, 350, 529\right]$ & $\left[575, 508, 541\right]$ & $\frac{544}{47}$ & $\frac{508}{47}$ & $\frac{29}{56}$ & $\frac{1245}{112}$ \\
+$48$ & $1$ & $2$ & $\left[556, 356, 540\right]$ & $\left[583, 520, 551\right]$ & $\frac{139}{12}$ & $\frac{65}{6}$ & $\frac{29}{56}$ & $\frac{1245}{112}$ \\
+$49$ & $1$ & $2$ & $\left[568, 362, 551\right]$ & $\left[591, 532, 561\right]$ & $\frac{568}{49}$ & $\frac{76}{7}$ & $\frac{29}{56}$ & $\frac{1245}{112}$ \\
+$50$ & $1$ & $2$ & $\left[580, 368, 562\right]$ & $\left[599, 544, 571\right]$ & $\frac{58}{5}$ & $\frac{272}{25}$ & $\frac{99}{200}$ & $\frac{4451}{400}$ \\
+$51$ & $1$ & $2$ & $\left[592, 374, 573\right]$ & $\left[607, 556, 581\right]$ & $\frac{592}{51}$ & $\frac{556}{51}$ & $\frac{193}{408}$ & $\frac{9089}{816}$ \\
+$52$ & $1$ & $2$ & $\left[604, 380, 584\right]$ & $\left[615, 568, 591\right]$ & $\frac{151}{13}$ & $\frac{142}{13}$ & $\frac{47}{104}$ & $\frac{2319}{208}$ \\
+$53$ & $1$ & $2$ & $\left[616, 386, 595\right]$ & $\left[623, 580, 601\right]$ & $\frac{616}{53}$ & $\frac{580}{53}$ & $\frac{183}{424}$ & $\frac{9463}{848}$ \\
+$54$ & $1$ & $2$ & $\left[628, 392, 606\right]$ & $\left[631, 592, 611\right]$ & $\frac{314}{27}$ & $\frac{296}{27}$ & $\frac{89}{216}$ & $\frac{4825}{432}$ \\
+$55$ & $1$ & $2$ & $\left[640, 398, 617\right]$ & $\left[639, 604, 621\right]$ & $\frac{128}{11}$ & $\frac{604}{55}$ & $\frac{173}{440}$ & $\frac{9837}{880}$ \\
+$56$ & $1$ & $2$ & $\left[652, 404, 628\right]$ & $\left[647, 616, 631\right]$ & $\frac{163}{14}$ & $11$ & $\frac{3}{8}$ & $\frac{179}{16}$ \\
+$57$ & $1$ & $2$ & $\left[664, 410, 639\right]$ & $\left[655, 628, 641\right]$ & $\frac{664}{57}$ & $\frac{628}{57}$ & $\frac{163}{456}$ & $\frac{10211}{912}$ \\
+$58$ & $1$ & $2$ & $\left[676, 416, 650\right]$ & $\left[663, 640, 651\right]$ & $\frac{338}{29}$ & $\frac{320}{29}$ & $\frac{79}{232}$ & $\frac{5199}{464}$ \\
+$59$ & $1$ & $2$ & $\left[688, 422, 661\right]$ & $\left[671, 652, 661\right]$ & $\frac{688}{59}$ & $\frac{652}{59}$ & $\frac{153}{472}$ & $\frac{10585}{944}$ \\
+$60$ & $1$ & $2$ & $\left[700, 428, 672\right]$ & $\left[679, 664, 671\right]$ & $\frac{35}{3}$ & $\frac{166}{15}$ & $\frac{37}{120}$ & $\frac{2693}{240}$ \\
+$61$ & $1$ & $2$ & $\left[712, 434, 683\right]$ & $\left[687, 676, 681\right]$ & $\frac{712}{61}$ & $\frac{676}{61}$ & $\frac{143}{488}$ & $\frac{10959}{976}$ \\
+$62$ & $1$ & $2$ & $\left[724, 440, 694\right]$ & $\left[695, 688, 691\right]$ & $\frac{362}{31}$ & $\frac{344}{31}$ & $\frac{69}{248}$ & $\frac{5573}{496}$ \\
+$63$ & $1$ & $2$ & $\left[736, 446, 705\right]$ & $\left[703, 700, 701\right]$ & $\frac{736}{63}$ & $\frac{100}{9}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$64$ & $1$ & $2$ & $\left[748, 452, 716\right]$ & $\left[711, 712, 711\right]$ & $\frac{187}{16}$ & $\frac{711}{64}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$65$ & $1$ & $1$ & $\left[756, 453, 733\right]$ & $\left[719, 724, 721\right]$ & $\frac{756}{65}$ & $\frac{719}{65}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$66$ & $1$ & $1$ & $\left[764, 454, 750\right]$ & $\left[727, 736, 731\right]$ & $\frac{382}{33}$ & $\frac{727}{66}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$67$ & $1$ & $1$ & $\left[772, 455, 767\right]$ & $\left[735, 748, 741\right]$ & $\frac{772}{67}$ & $\frac{735}{67}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$68$ & $1$ & $1$ & $\left[780, 456, 784\right]$ & $\left[743, 760, 751\right]$ & $\frac{196}{17}$ & $\frac{743}{68}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$69$ & $3$ & $1$ & $\left[788, 457, 801\right]$ & $\left[760, 771, 762\right]$ & $\frac{267}{23}$ & $\frac{760}{69}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$70$ & $3$ & $1$ & $\left[796, 458, 818\right]$ & $\left[777, 782, 773\right]$ & $\frac{409}{35}$ & $\frac{773}{70}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$71$ & $3$ & $3$ & $\left[806, 477, 829\right]$ & $\left[794, 793, 784\right]$ & $\frac{829}{71}$ & $\frac{784}{71}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$72$ & $3$ & $3$ & $\left[816, 496, 840\right]$ & $\left[811, 804, 795\right]$ & $\frac{35}{3}$ & $\frac{265}{24}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$73$ & $3$ & $3$ & $\left[826, 515, 851\right]$ & $\left[828, 815, 806\right]$ & $\frac{851}{73}$ & $\frac{806}{73}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$74$ & $3$ & $3$ & $\left[836, 534, 862\right]$ & $\left[845, 826, 817\right]$ & $\frac{431}{37}$ & $\frac{817}{74}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$75$ & $3$ & $3$ & $\left[846, 553, 873\right]$ & $\left[862, 837, 828\right]$ & $\frac{291}{25}$ & $\frac{276}{25}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$76$ & $3$ & $3$ & $\left[856, 572, 884\right]$ & $\left[879, 848, 839\right]$ & $\frac{221}{19}$ & $\frac{839}{76}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$77$ & $3$ & $3$ & $\left[866, 591, 895\right]$ & $\left[896, 859, 850\right]$ & $\frac{895}{77}$ & $\frac{850}{77}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$78$ & $3$ & $3$ & $\left[876, 610, 906\right]$ & $\left[913, 870, 861\right]$ & $\frac{151}{13}$ & $\frac{287}{26}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$79$ & $3$ & $3$ & $\left[886, 629, 917\right]$ & $\left[930, 881, 872\right]$ & $\frac{917}{79}$ & $\frac{872}{79}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$80$ & $3$ & $3$ & $\left[896, 648, 928\right]$ & $\left[947, 892, 883\right]$ & $\frac{58}{5}$ & $\frac{883}{80}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$81$ & $3$ & $3$ & $\left[906, 667, 939\right]$ & $\left[964, 903, 894\right]$ & $\frac{313}{27}$ & $\frac{298}{27}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$82$ & $3$ & $3$ & $\left[916, 686, 950\right]$ & $\left[981, 914, 905\right]$ & $\frac{475}{41}$ & $\frac{905}{82}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$83$ & $3$ & $3$ & $\left[926, 705, 961\right]$ & $\left[998, 925, 916\right]$ & $\frac{961}{83}$ & $\frac{916}{83}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$84$ & $3$ & $3$ & $\left[936, 724, 972\right]$ & $\left[1015, 936, 927\right]$ & $\frac{81}{7}$ & $\frac{309}{28}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$85$ & $3$ & $3$ & $\left[946, 743, 983\right]$ & $\left[1032, 947, 938\right]$ & $\frac{983}{85}$ & $\frac{938}{85}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$86$ & $3$ & $3$ & $\left[956, 762, 994\right]$ & $\left[1049, 958, 949\right]$ & $\frac{497}{43}$ & $\frac{949}{86}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$87$ & $3$ & $3$ & $\left[966, 781, 1005\right]$ & $\left[1066, 969, 960\right]$ & $\frac{335}{29}$ & $\frac{320}{29}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$88$ & $3$ & $3$ & $\left[976, 800, 1016\right]$ & $\left[1083, 980, 971\right]$ & $\frac{127}{11}$ & $\frac{971}{88}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$89$ & $3$ & $3$ & $\left[986, 819, 1027\right]$ & $\left[1100, 991, 982\right]$ & $\frac{1027}{89}$ & $\frac{982}{89}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$90$ & $3$ & $3$ & $\left[996, 838, 1038\right]$ & $\left[1117, 1002, 993\right]$ & $\frac{173}{15}$ & $\frac{331}{30}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$91$ & $3$ & $3$ & $\left[1006, 857, 1049\right]$ & $\left[1134, 1013, 1004\right]$ & $\frac{1049}{91}$ & $\frac{1004}{91}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$92$ & $3$ & $3$ & $\left[1016, 876, 1060\right]$ & $\left[1151, 1024, 1015\right]$ & $\frac{265}{23}$ & $\frac{1015}{92}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$93$ & $3$ & $3$ & $\left[1026, 895, 1071\right]$ & $\left[1168, 1035, 1026\right]$ & $\frac{357}{31}$ & $\frac{342}{31}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$94$ & $3$ & $3$ & $\left[1036, 914, 1082\right]$ & $\left[1185, 1046, 1037\right]$ & $\frac{541}{47}$ & $\frac{1037}{94}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$95$ & $3$ & $3$ & $\left[1046, 933, 1093\right]$ & $\left[1202, 1057, 1048\right]$ & $\frac{1093}{95}$ & $\frac{1048}{95}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$96$ & $3$ & $3$ & $\left[1056, 952, 1104\right]$ & $\left[1219, 1068, 1059\right]$ & $\frac{23}{2}$ & $\frac{353}{32}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$97$ & $3$ & $3$ & $\left[1066, 971, 1115\right]$ & $\left[1236, 1079, 1070\right]$ & $\frac{1115}{97}$ & $\frac{1070}{97}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$98$ & $3$ & $3$ & $\left[1076, 990, 1126\right]$ & $\left[1253, 1090, 1081\right]$ & $\frac{563}{49}$ & $\frac{1081}{98}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$99$ & $3$ & $3$ & $\left[1086, 1009, 1137\right]$ & $\left[1270, 1101, 1092\right]$ & $\frac{379}{33}$ & $\frac{364}{33}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$100$ & $3$ & $3$ & $\left[1096, 1028, 1148\right]$ & $\left[1287, 1112, 1103\right]$ & $\frac{287}{25}$ & $\frac{1103}{100}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$101$ & $3$ & $3$ & $\left[1106, 1047, 1159\right]$ & $\left[1304, 1123, 1114\right]$ & $\frac{1159}{101}$ & $\frac{1114}{101}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$102$ & $3$ & $3$ & $\left[1116, 1066, 1170\right]$ & $\left[1321, 1134, 1125\right]$ & $\frac{195}{17}$ & $\frac{375}{34}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$103$ & $3$ & $3$ & $\left[1126, 1085, 1181\right]$ & $\left[1338, 1145, 1136\right]$ & $\frac{1181}{103}$ & $\frac{1136}{103}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$104$ & $3$ & $3$ & $\left[1136, 1104, 1192\right]$ & $\left[1355, 1156, 1147\right]$ & $\frac{149}{13}$ & $\frac{1147}{104}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$105$ & $3$ & $3$ & $\left[1146, 1123, 1203\right]$ & $\left[1372, 1167, 1158\right]$ & $\frac{401}{35}$ & $\frac{386}{35}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$106$ & $3$ & $3$ & $\left[1156, 1142, 1214\right]$ & $\left[1389, 1178, 1169\right]$ & $\frac{607}{53}$ & $\frac{1169}{106}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$107$ & $3$ & $3$ & $\left[1166, 1161, 1225\right]$ & $\left[1406, 1189, 1180\right]$ & $\frac{1225}{107}$ & $\frac{1180}{107}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$108$ & $3$ & $3$ & $\left[1176, 1180, 1236\right]$ & $\left[1423, 1200, 1191\right]$ & $\frac{103}{9}$ & $\frac{397}{36}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$109$ & $3$ & $3$ & $\left[1186, 1199, 1247\right]$ & $\left[1440, 1211, 1202\right]$ & $\frac{1247}{109}$ & $\frac{1202}{109}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$110$ & $3$ & $3$ & $\left[1196, 1218, 1258\right]$ & $\left[1457, 1222, 1213\right]$ & $\frac{629}{55}$ & $\frac{1213}{110}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$111$ & $3$ & $3$ & $\left[1206, 1237, 1269\right]$ & $\left[1474, 1233, 1224\right]$ & $\frac{423}{37}$ & $\frac{408}{37}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$112$ & $3$ & $3$ & $\left[1216, 1256, 1280\right]$ & $\left[1491, 1244, 1235\right]$ & $\frac{80}{7}$ & $\frac{1235}{112}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$113$ & $3$ & $3$ & $\left[1226, 1275, 1291\right]$ & $\left[1508, 1255, 1246\right]$ & $\frac{1291}{113}$ & $\frac{1246}{113}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$114$ & $3$ & $3$ & $\left[1236, 1294, 1302\right]$ & $\left[1525, 1266, 1257\right]$ & $\frac{217}{19}$ & $\frac{419}{38}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$115$ & $3$ & $3$ & $\left[1246, 1313, 1313\right]$ & $\left[1542, 1277, 1268\right]$ & $\frac{1313}{115}$ & $\frac{1268}{115}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$116$ & $3$ & $3$ & $\left[1256, 1332, 1324\right]$ & $\left[1559, 1288, 1279\right]$ & $\frac{333}{29}$ & $\frac{1279}{116}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$117$ & $2$ & $3$ & $\left[1266, 1351, 1335\right]$ & $\left[1560, 1294, 1298\right]$ & $\frac{1351}{117}$ & $\frac{1294}{117}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$118$ & $2$ & $2$ & $\left[1278, 1357, 1346\right]$ & $\left[1561, 1300, 1317\right]$ & $\frac{23}{2}$ & $\frac{650}{59}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$119$ & $2$ & $2$ & $\left[1290, 1363, 1357\right]$ & $\left[1562, 1306, 1336\right]$ & $\frac{1363}{119}$ & $\frac{1306}{119}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$120$ & $2$ & $2$ & $\left[1302, 1369, 1368\right]$ & $\left[1563, 1312, 1355\right]$ & $\frac{1369}{120}$ & $\frac{164}{15}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$121$ & $2$ & $2$ & $\left[1314, 1375, 1379\right]$ & $\left[1564, 1318, 1374\right]$ & $\frac{1379}{121}$ & $\frac{1318}{121}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$122$ & $3$ & $2$ & $\left[1326, 1381, 1390\right]$ & $\left[1581, 1329, 1385\right]$ & $\frac{695}{61}$ & $\frac{1329}{122}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$123$ & $3$ & $2$ & $\left[1338, 1387, 1401\right]$ & $\left[1598, 1340, 1396\right]$ & $\frac{467}{41}$ & $\frac{1340}{123}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$124$ & $3$ & $2$ & $\left[1350, 1393, 1412\right]$ & $\left[1615, 1351, 1407\right]$ & $\frac{353}{31}$ & $\frac{1351}{124}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$125$ & $3$ & $2$ & $\left[1362, 1399, 1423\right]$ & $\left[1632, 1362, 1418\right]$ & $\frac{1423}{125}$ & $\frac{1362}{125}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$126$ & $3$ & $2$ & $\left[1374, 1405, 1434\right]$ & $\left[1649, 1373, 1429\right]$ & $\frac{239}{21}$ & $\frac{1373}{126}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$127$ & $3$ & $2$ & $\left[1386, 1411, 1445\right]$ & $\left[1666, 1384, 1440\right]$ & $\frac{1445}{127}$ & $\frac{1384}{127}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$128$ & $3$ & $2$ & $\left[1398, 1417, 1456\right]$ & $\left[1683, 1395, 1451\right]$ & $\frac{91}{8}$ & $\frac{1395}{128}$ & $\frac{19}{72}$ & $\frac{1619}{144}$ \\
+$129$ & $3$ & $2$ & $\left[1410, 1423, 1467\right]$ & $\left[1700, 1406, 1462\right]$ & $\frac{489}{43}$ & $\frac{1406}{129}$ & $\frac{101}{387}$ & $\frac{8701}{774}$ \\
+$130$ & $3$ & $2$ & $\left[1422, 1429, 1478\right]$ & $\left[1717, 1417, 1473\right]$ & $\frac{739}{65}$ & $\frac{109}{10}$ & $\frac{151}{585}$ & $\frac{13151}{1170}$ \\
+$131$ & $3$ & $2$ & $\left[1434, 1435, 1489\right]$ & $\left[1734, 1428, 1484\right]$ & $\frac{1489}{131}$ & $\frac{1428}{131}$ & $\frac{301}{1179}$ & $\frac{26501}{2358}$ \\
+$132$ & $3$ & $2$ & $\left[1446, 1441, 1500\right]$ & $\left[1751, 1439, 1495\right]$ & $\frac{125}{11}$ & $\frac{1439}{132}$ & $\frac{25}{99}$ & $\frac{2225}{198}$ \\
+$133$ & $3$ & $2$ & $\left[1458, 1447, 1511\right]$ & $\left[1768, 1450, 1506\right]$ & $\frac{1511}{133}$ & $\frac{1450}{133}$ & $\frac{299}{1197}$ & $\frac{26899}{2394}$ \\
+$134$ & $3$ & $2$ & $\left[1470, 1453, 1522\right]$ & $\left[1785, 1461, 1517\right]$ & $\frac{761}{67}$ & $\frac{1461}{134}$ & $\frac{149}{603}$ & $\frac{13549}{1206}$ \\
+$135$ & $3$ & $2$ & $\left[1482, 1459, 1533\right]$ & $\left[1802, 1472, 1528\right]$ & $\frac{511}{45}$ & $\frac{1472}{135}$ & $\frac{11}{45}$ & $\frac{337}{30}$ \\
+$136$ & $3$ & $2$ & $\left[1494, 1465, 1544\right]$ & $\left[1819, 1483, 1539\right]$ & $\frac{193}{17}$ & $\frac{1483}{136}$ & $\frac{37}{153}$ & $\frac{3437}{306}$ \\
+$137$ & $3$ & $2$ & $\left[1506, 1471, 1555\right]$ & $\left[1836, 1494, 1550\right]$ & $\frac{1555}{137}$ & $\frac{1494}{137}$ & $\frac{295}{1233}$ & $\frac{27695}{2466}$ \\
+$138$ & $3$ & $2$ & $\left[1518, 1477, 1566\right]$ & $\left[1853, 1505, 1561\right]$ & $\frac{261}{23}$ & $\frac{1505}{138}$ & $\frac{49}{207}$ & $\frac{4649}{414}$ \\
+$139$ & $3$ & $2$ & $\left[1530, 1483, 1577\right]$ & $\left[1870, 1516, 1572\right]$ & $\frac{1577}{139}$ & $\frac{1516}{139}$ & $\frac{293}{1251}$ & $\frac{28093}{2502}$ \\
+$140$ & $3$ & $2$ & $\left[1542, 1489, 1588\right]$ & $\left[1887, 1527, 1583\right]$ & $\frac{397}{35}$ & $\frac{1527}{140}$ & $\frac{73}{315}$ & $\frac{7073}{630}$ \\
+$141$ & $3$ & $2$ & $\left[1554, 1495, 1599\right]$ & $\left[1904, 1538, 1594\right]$ & $\frac{533}{47}$ & $\frac{1538}{141}$ & $\frac{97}{423}$ & $\frac{9497}{846}$ \\
+$142$ & $3$ & $2$ & $\left[1566, 1501, 1610\right]$ & $\left[1921, 1549, 1605\right]$ & $\frac{805}{71}$ & $\frac{1549}{142}$ & $\frac{145}{639}$ & $\frac{14345}{1278}$ \\
+$143$ & $3$ & $2$ & $\left[1578, 1507, 1621\right]$ & $\left[1938, 1560, 1616\right]$ & $\frac{1621}{143}$ & $\frac{120}{11}$ & $\frac{289}{1287}$ & $\frac{28889}{2574}$ \\
+$144$ & $3$ & $2$ & $\left[1590, 1513, 1632\right]$ & $\left[1955, 1571, 1627\right]$ & $\frac{34}{3}$ & $\frac{1571}{144}$ & $\frac{2}{9}$ & $\frac{101}{9}$ \\
+$145$ & $3$ & $2$ & $\left[1602, 1519, 1643\right]$ & $\left[1972, 1582, 1638\right]$ & $\frac{1643}{145}$ & $\frac{1582}{145}$ & $\frac{287}{1305}$ & $\frac{29287}{2610}$ \\
+$146$ & $3$ & $2$ & $\left[1614, 1525, 1654\right]$ & $\left[1989, 1593, 1649\right]$ & $\frac{827}{73}$ & $\frac{1593}{146}$ & $\frac{143}{657}$ & $\frac{14743}{1314}$ \\
+$147$ & $3$ & $2$ & $\left[1626, 1531, 1665\right]$ & $\left[2006, 1604, 1660\right]$ & $\frac{555}{49}$ & $\frac{1604}{147}$ & $\frac{95}{441}$ & $\frac{9895}{882}$ \\
+$148$ & $3$ & $2$ & $\left[1638, 1537, 1676\right]$ & $\left[2023, 1615, 1671\right]$ & $\frac{419}{37}$ & $\frac{1615}{148}$ & $\frac{71}{333}$ & $\frac{7471}{666}$ \\
+$149$ & $3$ & $2$ & $\left[1650, 1543, 1687\right]$ & $\left[2040, 1626, 1682\right]$ & $\frac{1687}{149}$ & $\frac{1626}{149}$ & $\frac{283}{1341}$ & $\frac{30083}{2682}$ \\
+$150$ & $3$ & $2$ & $\left[1662, 1549, 1698\right]$ & $\left[2057, 1637, 1693\right]$ & $\frac{283}{25}$ & $\frac{1637}{150}$ & $\frac{47}{225}$ & $\frac{5047}{450}$ \\
+$151$ & $3$ & $2$ & $\left[1674, 1555, 1709\right]$ & $\left[2074, 1648, 1704\right]$ & $\frac{1709}{151}$ & $\frac{1648}{151}$ & $\frac{281}{1359}$ & $\frac{30481}{2718}$ \\
+$152$ & $3$ & $2$ & $\left[1686, 1561, 1720\right]$ & $\left[2091, 1659, 1715\right]$ & $\frac{215}{19}$ & $\frac{1659}{152}$ & $\frac{35}{171}$ & $\frac{3835}{342}$ \\
+$153$ & $3$ & $2$ & $\left[1698, 1567, 1731\right]$ & $\left[2108, 1670, 1726\right]$ & $\frac{577}{51}$ & $\frac{1670}{153}$ & $\frac{31}{153}$ & $\frac{3431}{306}$ \\
+$154$ & $3$ & $2$ & $\left[1710, 1573, 1742\right]$ & $\left[2125, 1681, 1737\right]$ & $\frac{871}{77}$ & $\frac{1681}{154}$ & $\frac{139}{693}$ & $\frac{15539}{1386}$ \\
+$155$ & $3$ & $2$ & $\left[1722, 1579, 1753\right]$ & $\left[2142, 1692, 1748\right]$ & $\frac{1753}{155}$ & $\frac{1692}{155}$ & $\frac{277}{1395}$ & $\frac{31277}{2790}$ \\
+$156$ & $3$ & $2$ & $\left[1734, 1585, 1764\right]$ & $\left[2159, 1703, 1759\right]$ & $\frac{147}{13}$ & $\frac{131}{12}$ & $\frac{23}{117}$ & $\frac{2623}{234}$ \\
+$157$ & $3$ & $2$ & $\left[1746, 1591, 1775\right]$ & $\left[2176, 1714, 1770\right]$ & $\frac{1775}{157}$ & $\frac{1714}{157}$ & $\frac{275}{1413}$ & $\frac{31675}{2826}$ \\
+$158$ & $3$ & $2$ & $\left[1758, 1597, 1786\right]$ & $\left[2193, 1725, 1781\right]$ & $\frac{893}{79}$ & $\frac{1725}{158}$ & $\frac{137}{711}$ & $\frac{15937}{1422}$ \\
+$159$ & $3$ & $2$ & $\left[1770, 1603, 1797\right]$ & $\left[2210, 1736, 1792\right]$ & $\frac{599}{53}$ & $\frac{1736}{159}$ & $\frac{91}{477}$ & $\frac{10691}{954}$ \\
+$160$ & $3$ & $2$ & $\left[1782, 1609, 1808\right]$ & $\left[2227, 1747, 1803\right]$ & $\frac{113}{10}$ & $\frac{1747}{160}$ & $\frac{17}{90}$ & $\frac{2017}{180}$ \\
+$161$ & $3$ & $2$ & $\left[1794, 1615, 1819\right]$ & $\left[2244, 1758, 1814\right]$ & $\frac{1819}{161}$ & $\frac{1758}{161}$ & $\frac{271}{1449}$ & $\frac{32471}{2898}$ \\
+$162$ & $3$ & $2$ & $\left[1806, 1621, 1830\right]$ & $\left[2261, 1769, 1825\right]$ & $\frac{305}{27}$ & $\frac{1769}{162}$ & $\frac{5}{27}$ & $\frac{605}{54}$ \\
+$163$ & $3$ & $2$ & $\left[1818, 1627, 1841\right]$ & $\left[2278, 1780, 1836\right]$ & $\frac{1841}{163}$ & $\frac{1780}{163}$ & $\frac{269}{1467}$ & $\frac{32869}{2934}$ \\
+$164$ & $3$ & $2$ & $\left[1830, 1633, 1852\right]$ & $\left[2295, 1791, 1847\right]$ & $\frac{463}{41}$ & $\frac{1791}{164}$ & $\frac{67}{369}$ & $\frac{8267}{738}$ \\
+$165$ & $3$ & $2$ & $\left[1842, 1639, 1863\right]$ & $\left[2312, 1802, 1858\right]$ & $\frac{621}{55}$ & $\frac{1802}{165}$ & $\frac{89}{495}$ & $\frac{11089}{990}$ \\
+$166$ & $3$ & $2$ & $\left[1854, 1645, 1874\right]$ & $\left[2329, 1813, 1869\right]$ & $\frac{937}{83}$ & $\frac{1813}{166}$ & $\frac{133}{747}$ & $\frac{16733}{1494}$ \\
+$167$ & $3$ & $2$ & $\left[1866, 1651, 1885\right]$ & $\left[2346, 1824, 1880\right]$ & $\frac{1885}{167}$ & $\frac{1824}{167}$ & $\frac{265}{1503}$ & $\frac{33665}{3006}$ \\
+$168$ & $3$ & $2$ & $\left[1878, 1657, 1896\right]$ & $\left[2363, 1835, 1891\right]$ & $\frac{79}{7}$ & $\frac{1835}{168}$ & $\frac{11}{63}$ & $\frac{1411}{126}$ \\
+$169$ & $3$ & $2$ & $\left[1890, 1663, 1907\right]$ & $\left[2380, 1846, 1902\right]$ & $\frac{1907}{169}$ & $\frac{142}{13}$ & $\frac{263}{1521}$ & $\frac{34063}{3042}$ \\
+$170$ & $3$ & $2$ & $\left[1902, 1669, 1918\right]$ & $\left[2397, 1857, 1913\right]$ & $\frac{959}{85}$ & $\frac{1857}{170}$ & $\frac{131}{765}$ & $\frac{17131}{1530}$ \\
+$171$ & $3$ & $2$ & $\left[1914, 1675, 1929\right]$ & $\left[2414, 1868, 1924\right]$ & $\frac{643}{57}$ & $\frac{1868}{171}$ & $\frac{29}{171}$ & $\frac{3829}{342}$ \\
+$172$ & $3$ & $2$ & $\left[1926, 1681, 1940\right]$ & $\left[2431, 1879, 1935\right]$ & $\frac{485}{43}$ & $\frac{1879}{172}$ & $\frac{65}{387}$ & $\frac{8665}{774}$ \\
+$173$ & $3$ & $2$ & $\left[1938, 1687, 1951\right]$ & $\left[2448, 1890, 1946\right]$ & $\frac{1951}{173}$ & $\frac{1890}{173}$ & $\frac{259}{1557}$ & $\frac{34859}{3114}$ \\
+$174$ & $3$ & $2$ & $\left[1950, 1693, 1962\right]$ & $\left[2465, 1901, 1957\right]$ & $\frac{327}{29}$ & $\frac{1901}{174}$ & $\frac{43}{261}$ & $\frac{5843}{522}$ \\
+$175$ & $3$ & $2$ & $\left[1962, 1699, 1973\right]$ & $\left[2482, 1912, 1968\right]$ & $\frac{1973}{175}$ & $\frac{1912}{175}$ & $\frac{257}{1575}$ & $\frac{35257}{3150}$ \\
+$176$ & $3$ & $2$ & $\left[1974, 1705, 1984\right]$ & $\left[2499, 1923, 1979\right]$ & $\frac{124}{11}$ & $\frac{1923}{176}$ & $\frac{16}{99}$ & $\frac{1108}{99}$ \\
+$177$ & $3$ & $2$ & $\left[1986, 1711, 1995\right]$ & $\left[2516, 1934, 1990\right]$ & $\frac{665}{59}$ & $\frac{1934}{177}$ & $\frac{85}{531}$ & $\frac{11885}{1062}$ \\
+$178$ & $3$ & $2$ & $\left[1998, 1717, 2006\right]$ & $\left[2533, 1945, 2001\right]$ & $\frac{1003}{89}$ & $\frac{1945}{178}$ & $\frac{127}{801}$ & $\frac{17927}{1602}$ \\
+$179$ & $3$ & $2$ & $\left[2010, 1723, 2017\right]$ & $\left[2550, 1956, 2012\right]$ & $\frac{2017}{179}$ & $\frac{1956}{179}$ & $\frac{253}{1611}$ & $\frac{36053}{3222}$ \\
+$180$ & $3$ & $2$ & $\left[2022, 1729, 2028\right]$ & $\left[2567, 1967, 2023\right]$ & $\frac{169}{15}$ & $\frac{1967}{180}$ & $\frac{7}{45}$ & $\frac{1007}{90}$ \\
+$181$ & $3$ & $2$ & $\left[2034, 1735, 2039\right]$ & $\left[2584, 1978, 2034\right]$ & $\frac{2039}{181}$ & $\frac{1978}{181}$ & $\frac{251}{1629}$ & $\frac{36451}{3258}$ \\
+$182$ & $3$ & $2$ & $\left[2046, 1741, 2050\right]$ & $\left[2601, 1989, 2045\right]$ & $\frac{1025}{91}$ & $\frac{153}{14}$ & $\frac{125}{819}$ & $\frac{18325}{1638}$ \\
+$183$ & $3$ & $2$ & $\left[2058, 1747, 2061\right]$ & $\left[2618, 2000, 2056\right]$ & $\frac{687}{61}$ & $\frac{2000}{183}$ & $\frac{83}{549}$ & $\frac{12283}{1098}$ \\
+$184$ & $3$ & $2$ & $\left[2070, 1753, 2072\right]$ & $\left[2635, 2011, 2067\right]$ & $\frac{259}{23}$ & $\frac{2011}{184}$ & $\frac{31}{207}$ & $\frac{4631}{414}$ \\
+$185$ & $3$ & $2$ & $\left[2082, 1759, 2083\right]$ & $\left[2652, 2022, 2078\right]$ & $\frac{2083}{185}$ & $\frac{2022}{185}$ & $\frac{247}{1665}$ & $\frac{37247}{3330}$ \\
+$186$ & $3$ & $2$ & $\left[2094, 1765, 2094\right]$ & $\left[2669, 2033, 2089\right]$ & $\frac{349}{31}$ & $\frac{2033}{186}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$187$ & $1$ & $2$ & $\left[2106, 1771, 2105\right]$ & $\left[2677, 2045, 2099\right]$ & $\frac{2106}{187}$ & $\frac{2045}{187}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$188$ & $1$ & $2$ & $\left[2118, 1777, 2116\right]$ & $\left[2685, 2057, 2109\right]$ & $\frac{1059}{94}$ & $\frac{2057}{188}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$189$ & $1$ & $2$ & $\left[2130, 1783, 2127\right]$ & $\left[2693, 2069, 2119\right]$ & $\frac{710}{63}$ & $\frac{2069}{189}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$190$ & $1$ & $2$ & $\left[2142, 1789, 2138\right]$ & $\left[2701, 2081, 2129\right]$ & $\frac{1071}{95}$ & $\frac{2081}{190}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$191$ & $1$ & $2$ & $\left[2154, 1795, 2149\right]$ & $\left[2709, 2093, 2139\right]$ & $\frac{2154}{191}$ & $\frac{2093}{191}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$192$ & $1$ & $2$ & $\left[2166, 1801, 2160\right]$ & $\left[2717, 2105, 2149\right]$ & $\frac{361}{32}$ & $\frac{2105}{192}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$193$ & $1$ & $2$ & $\left[2178, 1807, 2171\right]$ & $\left[2725, 2117, 2159\right]$ & $\frac{2178}{193}$ & $\frac{2117}{193}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$194$ & $1$ & $2$ & $\left[2190, 1813, 2182\right]$ & $\left[2733, 2129, 2169\right]$ & $\frac{1095}{97}$ & $\frac{2129}{194}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$195$ & $1$ & $2$ & $\left[2202, 1819, 2193\right]$ & $\left[2741, 2141, 2179\right]$ & $\frac{734}{65}$ & $\frac{2141}{195}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$196$ & $1$ & $2$ & $\left[2214, 1825, 2204\right]$ & $\left[2749, 2153, 2189\right]$ & $\frac{1107}{98}$ & $\frac{2153}{196}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$197$ & $1$ & $2$ & $\left[2226, 1831, 2215\right]$ & $\left[2757, 2165, 2199\right]$ & $\frac{2226}{197}$ & $\frac{2165}{197}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$198$ & $1$ & $2$ & $\left[2238, 1837, 2226\right]$ & $\left[2765, 2177, 2209\right]$ & $\frac{373}{33}$ & $\frac{2177}{198}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$199$ & $1$ & $2$ & $\left[2250, 1843, 2237\right]$ & $\left[2773, 2189, 2219\right]$ & $\frac{2250}{199}$ & $11$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$200$ & $1$ & $2$ & $\left[2262, 1849, 2248\right]$ & $\left[2781, 2201, 2229\right]$ & $\frac{1131}{100}$ & $\frac{2201}{200}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$201$ & $1$ & $2$ & $\left[2274, 1855, 2259\right]$ & $\left[2789, 2213, 2239\right]$ & $\frac{758}{67}$ & $\frac{2213}{201}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$202$ & $1$ & $2$ & $\left[2286, 1861, 2270\right]$ & $\left[2797, 2225, 2249\right]$ & $\frac{1143}{101}$ & $\frac{2225}{202}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$203$ & $1$ & $2$ & $\left[2298, 1867, 2281\right]$ & $\left[2805, 2237, 2259\right]$ & $\frac{2298}{203}$ & $\frac{2237}{203}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$204$ & $1$ & $2$ & $\left[2310, 1873, 2292\right]$ & $\left[2813, 2249, 2269\right]$ & $\frac{385}{34}$ & $\frac{2249}{204}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$205$ & $1$ & $2$ & $\left[2322, 1879, 2303\right]$ & $\left[2821, 2261, 2279\right]$ & $\frac{2322}{205}$ & $\frac{2261}{205}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$206$ & $1$ & $2$ & $\left[2334, 1885, 2314\right]$ & $\left[2829, 2273, 2289\right]$ & $\frac{1167}{103}$ & $\frac{2273}{206}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$207$ & $1$ & $2$ & $\left[2346, 1891, 2325\right]$ & $\left[2837, 2285, 2299\right]$ & $\frac{34}{3}$ & $\frac{2285}{207}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$208$ & $1$ & $2$ & $\left[2358, 1897, 2336\right]$ & $\left[2845, 2297, 2309\right]$ & $\frac{1179}{104}$ & $\frac{2297}{208}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$209$ & $1$ & $2$ & $\left[2370, 1903, 2347\right]$ & $\left[2853, 2309, 2319\right]$ & $\frac{2370}{209}$ & $\frac{2309}{209}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$210$ & $1$ & $2$ & $\left[2382, 1909, 2358\right]$ & $\left[2861, 2321, 2329\right]$ & $\frac{397}{35}$ & $\frac{2321}{210}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$211$ & $1$ & $2$ & $\left[2394, 1915, 2369\right]$ & $\left[2869, 2333, 2339\right]$ & $\frac{2394}{211}$ & $\frac{2333}{211}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$212$ & $1$ & $2$ & $\left[2406, 1921, 2380\right]$ & $\left[2877, 2345, 2349\right]$ & $\frac{1203}{106}$ & $\frac{2345}{212}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$213$ & $1$ & $2$ & $\left[2418, 1927, 2391\right]$ & $\left[2885, 2357, 2359\right]$ & $\frac{806}{71}$ & $\frac{2357}{213}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$214$ & $1$ & $2$ & $\left[2430, 1933, 2402\right]$ & $\left[2893, 2369, 2369\right]$ & $\frac{1215}{107}$ & $\frac{2369}{214}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$215$ & $1$ & $2$ & $\left[2442, 1939, 2413\right]$ & $\left[2901, 2381, 2379\right]$ & $\frac{2442}{215}$ & $\frac{2379}{215}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$216$ & $1$ & $3$ & $\left[2452, 1958, 2424\right]$ & $\left[2909, 2393, 2389\right]$ & $\frac{613}{54}$ & $\frac{2389}{216}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$217$ & $1$ & $3$ & $\left[2462, 1977, 2435\right]$ & $\left[2917, 2405, 2399\right]$ & $\frac{2462}{217}$ & $\frac{2399}{217}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$218$ & $1$ & $3$ & $\left[2472, 1996, 2446\right]$ & $\left[2925, 2417, 2409\right]$ & $\frac{1236}{109}$ & $\frac{2409}{218}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$219$ & $1$ & $3$ & $\left[2482, 2015, 2457\right]$ & $\left[2933, 2429, 2419\right]$ & $\frac{34}{3}$ & $\frac{2419}{219}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$220$ & $1$ & $3$ & $\left[2492, 2034, 2468\right]$ & $\left[2941, 2441, 2429\right]$ & $\frac{623}{55}$ & $\frac{2429}{220}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$221$ & $1$ & $3$ & $\left[2502, 2053, 2479\right]$ & $\left[2949, 2453, 2439\right]$ & $\frac{2502}{221}$ & $\frac{2439}{221}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$222$ & $1$ & $3$ & $\left[2512, 2072, 2490\right]$ & $\left[2957, 2465, 2449\right]$ & $\frac{1256}{111}$ & $\frac{2449}{222}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$223$ & $1$ & $3$ & $\left[2522, 2091, 2501\right]$ & $\left[2965, 2477, 2459\right]$ & $\frac{2522}{223}$ & $\frac{2459}{223}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$224$ & $1$ & $3$ & $\left[2532, 2110, 2512\right]$ & $\left[2973, 2489, 2469\right]$ & $\frac{633}{56}$ & $\frac{2469}{224}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$225$ & $1$ & $3$ & $\left[2542, 2129, 2523\right]$ & $\left[2981, 2501, 2479\right]$ & $\frac{2542}{225}$ & $\frac{2479}{225}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$226$ & $1$ & $3$ & $\left[2552, 2148, 2534\right]$ & $\left[2989, 2513, 2489\right]$ & $\frac{1276}{113}$ & $\frac{2489}{226}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$227$ & $1$ & $3$ & $\left[2562, 2167, 2545\right]$ & $\left[2997, 2525, 2499\right]$ & $\frac{2562}{227}$ & $\frac{2499}{227}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$228$ & $1$ & $3$ & $\left[2572, 2186, 2556\right]$ & $\left[3005, 2537, 2509\right]$ & $\frac{643}{57}$ & $\frac{2509}{228}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$229$ & $1$ & $3$ & $\left[2582, 2205, 2567\right]$ & $\left[3013, 2549, 2519\right]$ & $\frac{2582}{229}$ & $11$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$230$ & $1$ & $3$ & $\left[2592, 2224, 2578\right]$ & $\left[3021, 2561, 2529\right]$ & $\frac{1296}{115}$ & $\frac{2529}{230}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$231$ & $1$ & $3$ & $\left[2602, 2243, 2589\right]$ & $\left[3029, 2573, 2539\right]$ & $\frac{2602}{231}$ & $\frac{2539}{231}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$232$ & $1$ & $3$ & $\left[2612, 2262, 2600\right]$ & $\left[3037, 2585, 2549\right]$ & $\frac{653}{58}$ & $\frac{2549}{232}$ & $\frac{41}{279}$ & $\frac{6241}{558}$ \\
+$233$ & $1$ & $3$ & $\left[2622, 2281, 2611\right]$ & $\left[3045, 2597, 2559\right]$ & $\frac{2622}{233}$ & $\frac{2559}{233}$ & $\frac{298}{2097}$ & $\frac{23449}{2097}$ \\
+$234$ & $1$ & $3$ & $\left[2632, 2300, 2622\right]$ & $\left[3053, 2609, 2569\right]$ & $\frac{1316}{117}$ & $\frac{2569}{234}$ & $\frac{16}{117}$ & $\frac{436}{39}$ \\
+$235$ & $1$ & $3$ & $\left[2642, 2319, 2633\right]$ & $\left[3061, 2621, 2579\right]$ & $\frac{2642}{235}$ & $\frac{2579}{235}$ & $\frac{278}{2115}$ & $\frac{23639}{2115}$ \\
+$236$ & $1$ & $3$ & $\left[2652, 2338, 2644\right]$ & $\left[3069, 2633, 2589\right]$ & $\frac{663}{59}$ & $\frac{2589}{236}$ & $\frac{67}{531}$ & $\frac{11867}{1062}$ \\
+$237$ & $1$ & $3$ & $\left[2662, 2357, 2655\right]$ & $\left[3077, 2645, 2599\right]$ & $\frac{2662}{237}$ & $\frac{2599}{237}$ & $\frac{86}{711}$ & $\frac{7943}{711}$ \\
+$238$ & $1$ & $3$ & $\left[2672, 2376, 2666\right]$ & $\left[3085, 2657, 2609\right]$ & $\frac{1336}{119}$ & $\frac{2609}{238}$ & $\frac{124}{1071}$ & $\frac{11962}{1071}$ \\
+$239$ & $1$ & $3$ & $\left[2682, 2395, 2677\right]$ & $\left[3093, 2669, 2619\right]$ & $\frac{2682}{239}$ & $\frac{2619}{239}$ & $\frac{238}{2151}$ & $\frac{24019}{2151}$ \\
+$240$ & $1$ & $3$ & $\left[2692, 2414, 2688\right]$ & $\left[3101, 2681, 2629\right]$ & $\frac{673}{60}$ & $\frac{2629}{240}$ & $\frac{19}{180}$ & $\frac{4019}{360}$ \\
+$241$ & $1$ & $3$ & $\left[2702, 2433, 2699\right]$ & $\left[3109, 2693, 2639\right]$ & $\frac{2702}{241}$ & $\frac{2639}{241}$ & $\frac{218}{2169}$ & $\frac{24209}{2169}$ \\
+$242$ & $1$ & $3$ & $\left[2712, 2452, 2710\right]$ & $\left[3117, 2705, 2649\right]$ & $\frac{1356}{121}$ & $\frac{2649}{242}$ & $\frac{104}{1089}$ & $\frac{12152}{1089}$ \\
+\end{longtable}
+
+    
+    Построим графики:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}9}]:} \PY{k+kn}{from} \PY{n+nn}{sage}\PY{n+nn}{.}\PY{n+nn}{plot}\PY{n+nn}{.}\PY{n+nn}{point} \PY{k}{import} \PY{n}{Point}
+        \PY{n}{a\PYZus{}points} \PY{o}{=} \PY{n}{point}\PY{p}{(}
+            \PY{p}{[}\PY{p}{(}\PY{n}{row}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{row}\PY{p}{[}\PY{l+m+mi}{5}\PY{p}{]}\PY{p}{)} \PY{k}{for} \PY{n}{row} \PY{o+ow}{in} \PY{n}{rows}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}\PY{p}{]}\PY{p}{,} 
+            \PY{n}{rgbcolor}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{red}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
+            \PY{n}{legend\PYZus{}label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Выигрыш игрока A}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
+            \PY{n}{legend\PYZus{}color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{red}\PY{l+s+s1}{\PYZsq{}}
+        \PY{p}{)}
+        \PY{n}{b\PYZus{}points} \PY{o}{=} \PY{n}{point}\PY{p}{(}
+            \PY{p}{[}\PY{p}{(}\PY{n}{row}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{row}\PY{p}{[}\PY{l+m+mi}{6}\PY{p}{]}\PY{p}{)} \PY{k}{for} \PY{n}{row} \PY{o+ow}{in} \PY{n}{rows}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}\PY{p}{]}\PY{p}{,} 
+            \PY{n}{rgbcolor}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{blue}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
+            \PY{n}{legend\PYZus{}label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Проигрыш игрока B}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
+            \PY{n}{legend\PYZus{}color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{blue}\PY{l+s+s1}{\PYZsq{}}
+        \PY{p}{)}
+        \PY{n}{e\PYZus{}points} \PY{o}{=} \PY{n}{point}\PY{p}{(}
+            \PY{p}{[}\PY{p}{(}\PY{n}{row}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{row}\PY{p}{[}\PY{l+m+mi}{7}\PY{p}{]}\PY{p}{)} \PY{k}{for} \PY{n}{row} \PY{o+ow}{in} \PY{n}{rows}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}\PY{p}{]}\PY{p}{,} 
+            \PY{n}{rgbcolor}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{green}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
+            \PY{n}{legend\PYZus{}label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Ошибка}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
+            \PY{n}{legend\PYZus{}color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{green}\PY{l+s+s1}{\PYZsq{}}
+        \PY{p}{)}
+        \PY{n}{v\PYZus{}points} \PY{o}{=} \PY{n}{point}\PY{p}{(}
+            \PY{p}{[}\PY{p}{(}\PY{n}{row}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{row}\PY{p}{[}\PY{l+m+mi}{8}\PY{p}{]}\PY{p}{)} \PY{k}{for} \PY{n}{row} \PY{o+ow}{in} \PY{n}{rows}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}\PY{p}{]}\PY{p}{,} 
+            \PY{n}{rgbcolor}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{black}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
+            \PY{n}{legend\PYZus{}label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Цена игры}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
+            \PY{n}{legend\PYZus{}color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{black}\PY{l+s+s1}{\PYZsq{}}
+        \PY{p}{)}
+        
+        \PY{n}{a\PYZus{}points} \PY{o}{+} \PY{n}{b\PYZus{}points} \PY{o}{+} \PY{n}{e\PYZus{}points} \PY{o}{+} \PY{n}{v\PYZus{}points}
+\end{Verbatim}
+\texttt{\color{outcolor}Out[{\color{outcolor}9}]:}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_20_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    Оптимальные стратегии для игрока \(A\):
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}10}]:} \PY{n}{Math}\PY{p}{(}\PY{n}{latex}\PY{p}{(}\PY{n}{x\PYZus{}strategies}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\texttt{\color{outcolor}Out[{\color{outcolor}10}]:}
+    
+    $$\left(\begin{array}{rrr}
+\frac{93}{242} & \frac{5}{121} & \frac{139}{242}
+\end{array}\right)$$
+
+    
+
     Оптимальные стратегии для игрока \(B\):
 
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{10}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{y\PYZus{}strategies} \PY{o}{=} \PY{n}{matrix}\PY{p}{(}\PY{p}{[}\PY{n}{i} \PY{o}{/} \PY{n}{k} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{vyk}\PY{o}{.}\PY{n}{values}\PY{p}{(}\PY{p}{)}\PY{p}{]}\PY{p}{)}
-\PY{n}{y\PYZus{}strategies}
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}11}]:} \PY{n}{Math}\PY{p}{(}\PY{n}{latex}\PY{p}{(}\PY{n}{y\PYZus{}strategies}\PY{p}{)}\PY{p}{)}
 \end{Verbatim}
-\end{tcolorbox}
+\texttt{\color{outcolor}Out[{\color{outcolor}11}]:}
+    
+    $$\left(\begin{array}{rrr}
+\frac{4}{121} & \frac{7}{11} & \frac{40}{121}
+\end{array}\right)$$
 
-            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
-\prompt{Out}{outcolor}{10}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-[1/6 1/3 1/2]
+    
+
+    Цена игры:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}12}]:} \PY{n}{Math}\PY{p}{(}\PY{n}{latex}\PY{p}{(}\PY{n}{cost}\PY{p}{)}\PY{p}{)}
 \end{Verbatim}
-\end{tcolorbox}
-        
+\texttt{\color{outcolor}Out[{\color{outcolor}12}]:}
+    
+    $$\frac{12152}{1089}$$
+
+    
+
 
     % Add a bibliography block to the postdoc
     
     
     
-\end{document}
+    \end{document}
